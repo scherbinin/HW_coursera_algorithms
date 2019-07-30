@@ -41,14 +41,12 @@ public class Percolation {
             //TODO: Actually it's a duplication, resolve it
             //TODO: probably we can simplify it: if we do union every time in correct order - the TOP_SITE will not change and will always equal ZERO
             unionEngine.union(getIndexFlatArray(row, col), TOP_SITE);
-            site[TOP_SITE] = unionEngine.find(site[TOP_SITE]);
         }
 
         if(row == N) { // The specific case where we should union BOTTOM_SITE with any open cell from the last row
             //TODO: Actually it's a duplication, resolve it
             //TODO: probably we can simplify it: if we do union every time in correct order - the TOP_SITE will not change and will always equal ZERO
             unionEngine.union(BOTTOM_SITE, getIndexFlatArray(row, col));
-            site[BOTTOM_SITE] = unionEngine.find(site[BOTTOM_SITE]);
         }
 
         //percolate it to all of its adjacent open sites.
@@ -70,7 +68,7 @@ public class Percolation {
         //A full site is an open site that can be connected to an open site in the top row
         validateBoundaries(row, col);
 
-        return unionEngine.connected(getIndexFlatArray(row,col), site[TOP_SITE]);
+        return unionEngine.connected(getIndexFlatArray(row,col), TOP_SITE);
     }
 
     // returns the number of open sites
@@ -80,7 +78,7 @@ public class Percolation {
 
     // does the system percolate?
     public boolean percolates() {
-        return unionEngine.connected(site[TOP_SITE], site[BOTTOM_SITE]);
+        return unionEngine.connected(TOP_SITE, BOTTOM_SITE);
     }
 
     // test client (optional)
@@ -90,11 +88,7 @@ public class Percolation {
 
     private void percolate(int row, int col, int actualRow, int actualCol) {
         if(inBoundaries(row, col) && isOpen(row, col)) {
-//            int parent = unionEngine.find(getIndexFlatArray(actualRow, actualCol));
-
-            //TODO: probably we can simplify it: if we do union every time in correct order - the TOP_SITE will not change and will always equal ZERO
             unionEngine.union(getIndexFlatArray(row, col), getIndexFlatArray(actualRow, actualCol));
-            site[TOP_SITE] = unionEngine.find(site[TOP_SITE]);
         }
     }
 
