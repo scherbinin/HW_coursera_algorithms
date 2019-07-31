@@ -42,7 +42,7 @@ public class PercolationTaskTest {
         percolation.open(4,5);
         percolation.open(5,5);
 
-        //percolation.print();
+//        percolation.print();
 
         boolean actual = percolation.percolates();
         boolean expected = true;
@@ -88,10 +88,26 @@ public class PercolationTaskTest {
         percolation.open(4, 5);
         percolation.open(3, 4);
 
-//        percolation.print();
+        percolation.print();
 
         boolean actual = percolation.percolates();
         boolean expected = true;
+
+        assertEquals(actual, expected);
+    }
+
+    @Test
+    public void testBackWash() {
+        percolation.open(5, 4);
+        percolation.isFull(5,4);
+
+        percolation.open(4, 4);
+        percolation.isFull(5,4);
+
+        percolation.print();
+
+        boolean actual = percolation.percolates();
+        boolean expected = false;
 
         assertEquals(actual, expected);
     }

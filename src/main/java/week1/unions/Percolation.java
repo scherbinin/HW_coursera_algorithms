@@ -5,115 +5,118 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
 
-   private WeightedQuickUnionUF unionEngine;
-   private char[] sites;
-   private final int N;
-   private final int TOP_SITE = 0;
-   private final int BOTTOM_SITE = 1;
-   private final char BLOCKED_SITE = '0';
-   private int numberOfOpenSites = 0;
+    private WeightedQuickUnionUF unionEngine;
+    private char[] sites;
+    private final int N;
+    private final int TOP_SITE = 0;
+    private final int BOTTOM_SITE = 1;
+    private final char BLOCKED_SITE = '0';
+    private int numberOfOpenSites = 0;
 
-   // creates n-by-n grid, with all sites initially blocked
-   public Percolation(int n) {
-      N = n;
-      int size = n * n;
+    // creates n-by-n grid, with all sites initially blocked
+    public Percolation(int n) {
+        if (n < 1)
+            throw new IllegalArgumentException();
 
-      //Zero index - is a virtual sites for top row
-      //SIZE+1 index - is virtual sites for bottom row
-      unionEngine = new WeightedQuickUnionUF(size + 2);
-      sites = new char[size + 2];
-      sites[TOP_SITE] = TOP_SITE;
-      sites[BOTTOM_SITE] = BOTTOM_SITE;
+        N = n;
+        int size = n * n;
 
-      for (int i = 2; i < size + 2; i++)
-         sites[i] = BLOCKED_SITE;
-   }
+        //Zero index - is a virtual sites for top row
+        //SIZE+1 index - is virtual sites for bottom row
+        unionEngine = new WeightedQuickUnionUF(size + 2);
+        sites = new char[size + 2];
+        sites[TOP_SITE] = TOP_SITE;
+        sites[BOTTOM_SITE] = BOTTOM_SITE;
 
-   // opens the sites (row, col) if it is not open already
-   public void open(int row, int col) {
-      validateBoundaries(row, col);
+        for (int i = 2; i < size + 2; i++)
+            sites[i] = BLOCKED_SITE;
+    }
 
-      if (isOpen(row, col))
-         return;
+    // opens the sites (row, col) if it is not open already
+    public void open(int row, int col) {
+        validateBoundaries(row, col);
 
-      sites[getIndexFlatArray(row, col)] = '*';
-      numberOfOpenSites++;
+        if (isOpen(row, col))
+            return;
 
-      if (row == 1) {
-         unionEngine.union(getIndexFlatArray(row, col), TOP_SITE);
-      }
+        sites[getIndexFlatArray(row, col)] = '*';
+        numberOfOpenSites++;
 
-      if (row == N) {
-         unionEngine.union(BOTTOM_SITE, getIndexFlatArray(row, col));
-      }
+        if (row == 1) {
+            unionEngine.union(getIndexFlatArray(row, col), TOP_SITE);
+        }
 
-      //percolate it to all of its adjacent open sites.
-      percolate(row - 1, col, row, col);
-      percolate(row + 1, col, row, col);
-      percolate(row, col - 1, row, col);
-      percolate(row, col + 1, row, col);
-   }
+        if (row == N) {
+            unionEngine.union(BOTTOM_SITE, getIndexFlatArray(row, col));
+        }
 
-   // is the sites (row, col) open?
-   public boolean isOpen(int row, int col) {
-      validateBoundaries(row, col);
+        //percolate it to all of its adjacent open sites.
+        percolate(row - 1, col, row, col);
+        percolate(row + 1, col, row, col);
+        percolate(row, col - 1, row, col);
+        percolate(row, col + 1, row, col);
+    }
 
-      return sites[getIndexFlatArray(row, col)] != BLOCKED_SITE;
-   }
+    // is the sites (row, col) open?
+    public boolean isOpen(int row, int col) {
+        validateBoundaries(row, col);
 
-   // is the sites (row, col) full?
-   public boolean isFull(int row, int col) {
-      //A full sites is an open sites that can be connected to an open sites in the top row
-      validateBoundaries(row, col);
+        return sites[getIndexFlatArray(row, col)] != BLOCKED_SITE;
+    }
 
-      return unionEngine.connected(getIndexFlatArray(row, col), TOP_SITE);
-   }
+    // is the sites (row, col) full?
+    public boolean isFull(int row, int col) {
+        //A full sites is an open sites that can be connected to an open sites in the top row
+        validateBoundaries(row, col);
 
-   // returns the number of open sites
-   public int numberOfOpenSites() {
-      return numberOfOpenSites;
-   }
+        return unionEngine.connected(getIndexFlatArray(row, col), TOP_SITE);
+    }
 
-   // does the system percolate?
-   public boolean percolates() {
-      return unionEngine.connected(TOP_SITE, BOTTOM_SITE);
-   }
+    // returns the number of open sites
+    public int numberOfOpenSites() {
+        return numberOfOpenSites;
+    }
 
-   private void percolate(int row, int col, int actualRow, int actualCol) {
-      if (inBoundaries(row, col) && isOpen(row, col)) {
-         unionEngine.union(getIndexFlatArray(row, col), getIndexFlatArray(actualRow, actualCol));
-      }
-   }
+    // does the system percolate?
+    public boolean percolates() {
+        return unionEngine.connected(TOP_SITE, BOTTOM_SITE);
+    }
 
-   private int getIndexFlatArray(int row, int column) {
-      return N * (row - 1) + column + 1;
-   }
+    private void percolate(int row, int col, int actualRow, int actualCol) {
+        if (inBoundaries(row, col) && isOpen(row, col)) {
+            unionEngine.union(getIndexFlatArray(row, col), getIndexFlatArray(actualRow, actualCol));
+        }
+    }
 
-   private void validateBoundaries(int row, int col) {
-      if (!inBoundaries(row, col))
-         throw new IllegalArgumentException();
-   }
+    private int getIndexFlatArray(int row, int column) {
+        return N * (row - 1) + column + 1;
+    }
 
-   private boolean inBoundaries(int row, int col) {
-      if (row < 1 || row > N || col < 1 || col > N)
-         return false;
+    private void validateBoundaries(int row, int col) {
+        if (!inBoundaries(row, col))
+            throw new IllegalArgumentException();
+    }
 
-      return true;
-   }
+    private boolean inBoundaries(int row, int col) {
+        if (row < 1 || row > N || col < 1 || col > N)
+            return false;
 
-   //Simple visualization for debug
-   private void print() {
-      for (int i = 0; i < N * N; i++) {
-         if (i % N == 0) {
-            StdOut.print("\n");
-         }
-         StdOut.print(sites[i + 2] + " ");
-      }
-      StdOut.print("\n\n");
-   }
+        return true;
+    }
 
-   // test client (optional)
-   public static void main(String[] args) {
+    //Simple visualization for debug
+    public void print() {
+        for (int i = 0; i < N * N; i++) {
+            if (i % N == 0) {
+                StdOut.print("\n");
+            }
+            StdOut.print(sites[i + 2] + " ");
+        }
+        StdOut.print("\n\n");
+    }
 
-   }
+    // test client (optional)
+    public static void main(String[] args) {
+
+    }
 }
