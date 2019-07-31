@@ -1,110 +1,119 @@
 package week1.unions;
 
+import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
-import edu.princeton.cs.algs4.StdRandom;
-import edu.princeton.cs.algs4.StdStats;
 
 public class Percolation {
-    private WeightedQuickUnionUF unionEngine;
-    private int[] site;
-    private final int SIZE;
-    private final int N;//TODO i believe that is useless variable
-    private final int TOP_SITE = 0;
-    private final int BOTTOM_SITE = 1;
-    private final int BLOCKED_SITE = -1;
-    private int numberOfOpenSites = 0;
 
-    // creates n-by-n grid, with all sites initially blocked
-    public Percolation(int n) {
-        N = n;
-        SIZE = n*n;
+   private WeightedQuickUnionUF unionEngine;
+   private char[] sites;
+   private final int N;
+   private final int TOP_SITE = 0;
+   private final int BOTTOM_SITE = 1;
+   private final char BLOCKED_SITE = '0';
+   private int numberOfOpenSites = 0;
 
-        //Zero index - is a virtual site for top row
-        //SIZE+1 index - is virtual site for bottom row
-        unionEngine = new WeightedQuickUnionUF(SIZE + 2);
-        site = new int[SIZE + 2];//TODO fix it: don't nessecary to have 2 more elements
-        site[TOP_SITE] = TOP_SITE;
-        site[BOTTOM_SITE] = BOTTOM_SITE;
+   // creates n-by-n grid, with all sites initially blocked
+   public Percolation(int n) {
+      N = n;
+      int size = n * n;
 
-        for(int i=2; i<SIZE+2; i++)
-            site[i] = BLOCKED_SITE;
-    }
+      //Zero index - is a virtual sites for top row
+      //SIZE+1 index - is virtual sites for bottom row
+      unionEngine = new WeightedQuickUnionUF(size + 2);
+      sites = new char[size + 2];
+      sites[TOP_SITE] = TOP_SITE;
+      sites[BOTTOM_SITE] = BOTTOM_SITE;
 
-    // opens the site (row, col) if it is not open already
-    public void open(int row, int col) {
-        validateBoundaries(row, col);
+      for (int i = 2; i < size + 2; i++)
+         sites[i] = BLOCKED_SITE;
+   }
 
-        site[getIndexFlatArray(row, col)] = 0;
-        numberOfOpenSites++;
+   // opens the sites (row, col) if it is not open already
+   public void open(int row, int col) {
+      validateBoundaries(row, col);
 
-        if(row == 1) { // The specific case where we should union TOP_SITE with any open cell from the first row
-            //TODO: Actually it's a duplication, resolve it
-            //TODO: probably we can simplify it: if we do union every time in correct order - the TOP_SITE will not change and will always equal ZERO
-            unionEngine.union(getIndexFlatArray(row, col), TOP_SITE);
-        }
+      if (isOpen(row, col))
+         return;
 
-        if(row == N) { // The specific case where we should union BOTTOM_SITE with any open cell from the last row
-            //TODO: Actually it's a duplication, resolve it
-            //TODO: probably we can simplify it: if we do union every time in correct order - the TOP_SITE will not change and will always equal ZERO
-            unionEngine.union(BOTTOM_SITE, getIndexFlatArray(row, col));
-        }
+      sites[getIndexFlatArray(row, col)] = '*';
+      numberOfOpenSites++;
 
-        //percolate it to all of its adjacent open sites.
-        percolate(row-1, col, row, col);
-        percolate(row+1, col, row, col);
-        percolate(row, col-1, row, col);
-        percolate(row, col+1, row, col);
-    }
+      if (row == 1) {
+         unionEngine.union(getIndexFlatArray(row, col), TOP_SITE);
+      }
 
-    // is the site (row, col) open?
-    public boolean isOpen(int row, int col) {
-        validateBoundaries(row, col);
+      if (row == N) {
+         unionEngine.union(BOTTOM_SITE, getIndexFlatArray(row, col));
+      }
 
-        return site[getIndexFlatArray(row, col)] != BLOCKED_SITE;
-    }
+      //percolate it to all of its adjacent open sites.
+      percolate(row - 1, col, row, col);
+      percolate(row + 1, col, row, col);
+      percolate(row, col - 1, row, col);
+      percolate(row, col + 1, row, col);
+   }
 
-    // is the site (row, col) full?
-    public boolean isFull(int row, int col) {
-        //A full site is an open site that can be connected to an open site in the top row
-        validateBoundaries(row, col);
+   // is the sites (row, col) open?
+   public boolean isOpen(int row, int col) {
+      validateBoundaries(row, col);
 
-        return unionEngine.connected(getIndexFlatArray(row,col), TOP_SITE);
-    }
+      return sites[getIndexFlatArray(row, col)] != BLOCKED_SITE;
+   }
 
-    // returns the number of open sites
-    public int numberOfOpenSites() {
-        return numberOfOpenSites;
-    }
+   // is the sites (row, col) full?
+   public boolean isFull(int row, int col) {
+      //A full sites is an open sites that can be connected to an open sites in the top row
+      validateBoundaries(row, col);
 
-    // does the system percolate?
-    public boolean percolates() {
-        return unionEngine.connected(TOP_SITE, BOTTOM_SITE);
-    }
+      return unionEngine.connected(getIndexFlatArray(row, col), TOP_SITE);
+   }
 
-    // test client (optional)
-    public static void main(String[] args) {
+   // returns the number of open sites
+   public int numberOfOpenSites() {
+      return numberOfOpenSites;
+   }
 
-    }
+   // does the system percolate?
+   public boolean percolates() {
+      return unionEngine.connected(TOP_SITE, BOTTOM_SITE);
+   }
 
-    private void percolate(int row, int col, int actualRow, int actualCol) {
-        if(inBoundaries(row, col) && isOpen(row, col)) {
-            unionEngine.union(getIndexFlatArray(row, col), getIndexFlatArray(actualRow, actualCol));
-        }
-    }
+   private void percolate(int row, int col, int actualRow, int actualCol) {
+      if (inBoundaries(row, col) && isOpen(row, col)) {
+         unionEngine.union(getIndexFlatArray(row, col), getIndexFlatArray(actualRow, actualCol));
+      }
+   }
 
-    private int getIndexFlatArray(int row, int column) {
-        return N*(row - 1) + column + 1;
-    }
+   private int getIndexFlatArray(int row, int column) {
+      return N * (row - 1) + column + 1;
+   }
 
-    private void validateBoundaries(int row, int col) {
-        if(!inBoundaries(row, col))
-            throw new IllegalArgumentException();
-    }
+   private void validateBoundaries(int row, int col) {
+      if (!inBoundaries(row, col))
+         throw new IllegalArgumentException();
+   }
 
-    private boolean inBoundaries(int row, int col) {
-        if(row < 1 || row > N || col < 1 || col > N)
-            return false;
+   private boolean inBoundaries(int row, int col) {
+      if (row < 1 || row > N || col < 1 || col > N)
+         return false;
 
-        return true;
-    }
+      return true;
+   }
+
+   //Simple visualization for debug
+   private void print() {
+      for (int i = 0; i < N * N; i++) {
+         if (i % N == 0) {
+            StdOut.print("\n");
+         }
+         StdOut.print(sites[i + 2] + " ");
+      }
+      StdOut.print("\n\n");
+   }
+
+   // test client (optional)
+   public static void main(String[] args) {
+
+   }
 }

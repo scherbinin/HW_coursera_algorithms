@@ -42,6 +42,8 @@ public class PercolationTaskTest {
         percolation.open(4,5);
         percolation.open(5,5);
 
+        //percolation.print();
+
         boolean actual = percolation.percolates();
         boolean expected = true;
 
@@ -59,6 +61,34 @@ public class PercolationTaskTest {
         percolation.open(3,5);
         percolation.open(4,5);
         percolation.open(5,5);
+
+        //percolation.print();
+
+        boolean actual = percolation.percolates();
+        boolean expected = true;
+
+        assertEquals(actual, expected);
+    }
+
+    @Test
+    public void testPercolation_whenOpenInternalSquaresUntilItPercolate_expectedPercolated() {
+        percolation.open(4, 5);
+        percolation.open(3, 1);
+        percolation.open(4, 4);
+        percolation.open(5, 3);
+        percolation.open(2, 4);
+        percolation.open(2, 4);
+        percolation.open(1, 4);
+        percolation.open(5, 4);
+        percolation.open(3, 1);
+        percolation.open(3, 2);
+        percolation.open(5, 4);
+        percolation.open(2, 2);
+        percolation.open(2, 5);
+        percolation.open(4, 5);
+        percolation.open(3, 4);
+
+//        percolation.print();
 
         boolean actual = percolation.percolates();
         boolean expected = true;
