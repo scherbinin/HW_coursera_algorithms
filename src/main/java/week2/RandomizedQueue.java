@@ -78,12 +78,12 @@ public class RandomizedQueue<T> {
             curr++;
         }
 
-        return currNode
+        return currNode;
     }
 
     // return an independent iterator over items in random order
     public Iterator<T> iterator() {
-
+        return new Iterator<>();
     }
 
     private class Iterator<T> implements java.util.Iterator<T> {
