@@ -32,10 +32,10 @@ public class Deque<T> implements Iterable<T> {
         if(isEmpty()) {
             root = newNode;
             last = newNode;
+        } else {
+            root.setPrev(newNode);
+            root = newNode;
         }
-
-        root.setPrev(newNode);
-        root = newNode;
 
         size++;
     }

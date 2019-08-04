@@ -1,10 +1,11 @@
 package week2;
 
-import java.util.NoSuchElementException;
+
+import edu.princeton.cs.algs4.StdRandom;
 
 /**
  * Created by scher on 04.08.2019.
- *
+ * <p>
  * A randomized queue is similar to a stack or queue, except that the item removed is chosen uniformly at random among items in the data structure
  */
 public class RandomizedQueue<T> {
@@ -37,22 +38,47 @@ public class RandomizedQueue<T> {
         if(isEmpty()) {
             root = newNode;
             last = newNode;
+        } else {
+            root.setPrev(newNode);
+            root = newNode;
         }
-
-        root.setPrev(newNode);
-        root = newNode;
 
         size++;
     }
 
     // remove and return a random item
     public T dequeue() {
+        Node<T> randomNode = selectRandomNode();
 
+        if(randomNode.getPrev() != null) {
+            Node<T> prevNode = randomNode.getPrev();
+            prevNode.setNext(randomNode.getNext());
+        }
+
+        if(randomNode.getNext() != null) {
+            Node<T> nextNode = randomNode.getNext();
+            nextNode.setPrev(randomNode.getPrev());
+        }
+
+        return randomNode.getValue();
     }
 
     // return a random item (but do not remove it)
     public T sample() {
+        return selectRandomNode().getValue();
+    }
 
+    private Node<T> selectRandomNode() {
+        int index = StdRandom.uniform(size) + 1;
+        int curr = 0;
+        Node<T> currNode = root;
+
+        while (curr != index) {
+            currNode = currNode.getNext();
+            curr++;
+        }
+
+        return currNode
     }
 
     // return an independent iterator over items in random order
@@ -63,20 +89,18 @@ public class RandomizedQueue<T> {
     private class Iterator<T> implements java.util.Iterator<T> {
         Node node = root;
 
+        public Iterator() {
+            //Fill here the whole order of output sequence in simple array int[]
+        }
+
         @Override
         public boolean hasNext() {
-            return node != null;
+            //
         }
 
         @Override
         public T next() {
-            if(!hasNext())
-                throw new NoSuchElementException();
-
-            T value = (T)node.getValue();
-            node = node.getNext();
-
-            return value;
+            //Get next in initially generated array
         }
 
         @Override
