@@ -4,6 +4,8 @@ import org.junit.Before;
 import org.junit.Test;
 import week2.Deque;
 
+import java.util.Iterator;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -43,7 +45,7 @@ public class DequeTest {
 
         //Check is empty
         assertTrue(underTestQueue.isEmpty());
-        assertEquals(underTestQueue.size(),0);
+        assertEquals(underTestQueue.size(), 0);
     }
 
     @Test
@@ -58,7 +60,7 @@ public class DequeTest {
         underTestQueue.addLast(str2);
         underTestQueue.addLast(str3);
 
-        assertEquals(underTestQueue.size(),3);
+        assertEquals(underTestQueue.size(), 3);
 
         //Pop 1
         assertEquals(underTestQueue.removeLast(), str3);
@@ -73,7 +75,7 @@ public class DequeTest {
 
         //Check is empty
         assertTrue(underTestQueue.isEmpty());
-        assertEquals(underTestQueue.size(),0);
+        assertEquals(underTestQueue.size(), 0);
     }
 
     @Test
@@ -101,6 +103,26 @@ public class DequeTest {
 
         //Check is empty
         assertTrue(underTestQueue.isEmpty());
-        assertEquals(underTestQueue.size(),0);
+        assertEquals(underTestQueue.size(), 0);
+    }
+
+    @Test
+    public void test1() {
+        Deque<Integer> underTestQueue1 = new Deque<>();
+
+        int m = 50;
+
+        for (int i = 0; i <= m; i++) {
+            underTestQueue1.addFirst(i);
+            underTestQueue1.addLast(i);
+            underTestQueue1.removeFirst();
+            underTestQueue1.removeLast();
+        }
+
+        Iterator<Integer> it = underTestQueue1.iterator();
+
+        while(it.hasNext()) {
+            it.next();
+        }
     }
 }

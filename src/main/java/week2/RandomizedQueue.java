@@ -1,6 +1,7 @@
 package week2;
 
 
+import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.StdRandom;
 
 import java.util.NoSuchElementException;
@@ -10,9 +11,9 @@ import java.util.NoSuchElementException;
  * <p>
  * A randomized queue is similar to a stack or queue, except that the item removed is chosen uniformly at random among items in the data structure
  */
-public class RandomizedQueue<T>  implements Iterable<T> {
-    private Node<T> root;
-    private Node<T> last;
+public class RandomizedQueue<Item> implements Iterable<Item> {
+    private Node<Item> root;
+    private Node<Item> last;
     private int size;
 
     // construct an empty randomized queue
@@ -31,13 +32,13 @@ public class RandomizedQueue<T>  implements Iterable<T> {
     }
 
     // add the item
-    public void enqueue(T item) {
-        if(item == null)
+    public void enqueue(Item item) {
+        if (item == null)
             throw new IllegalArgumentException();
 
-        Node newNode = new Node(item, root, null);
+        Node<Item> newNode = new Node<>(item, root, null);
 
-        if(isEmpty()) {
+        if (isEmpty()) {
             root = newNode;
             last = newNode;
         } else {
@@ -49,24 +50,27 @@ public class RandomizedQueue<T>  implements Iterable<T> {
     }
 
     // remove and return a random item
-    public T dequeue() {
-        Node<T> randomNode = selectRandomNode();
-        T value = randomNode.getValue();
+    public Item dequeue() {
+        if (isEmpty())
+            throw new NoSuchElementException();
+
+        Node<Item> randomNode = selectRandomNode();
+        Item value = randomNode.getValue();
         size--;
 
-        if(randomNode.getPrev() != null) {
-            Node<T> prevNode = randomNode.getPrev();
+        if (randomNode.getPrev() != null) {
+            Node<Item> prevNode = randomNode.getPrev();
             prevNode.setNext(randomNode.getNext());
 
-            if(randomNode == last)
+            if (randomNode == last)
                 last = prevNode;
         }
 
-        if(randomNode.getNext() != null) {
-            Node<T> nextNode = randomNode.getNext();
+        if (randomNode.getNext() != null) {
+            Node<Item> nextNode = randomNode.getNext();
             nextNode.setPrev(randomNode.getPrev());
 
-            if(randomNode == root)
+            if (randomNode == root)
                 root = nextNode;
         }
 
@@ -79,17 +83,17 @@ public class RandomizedQueue<T>  implements Iterable<T> {
     }
 
     // return a random item (but do not remove it)
-    public T sample() {
-        if(isEmpty())
+    public Item sample() {
+        if (isEmpty())
             throw new NoSuchElementException();
 
         return selectRandomNode().getValue();
     }
 
-    private Node<T> selectRandomNode() {
+    private Node<Item> selectRandomNode() {
         int index = StdRandom.uniform(size);
         int curr = 0;
-        Node<T> currNode = root;
+        Node<Item> currNode = root;
 
         while (curr != index) {
             currNode = currNode.getNext();
@@ -100,19 +104,19 @@ public class RandomizedQueue<T>  implements Iterable<T> {
     }
 
     // return an independent iterator over items in random order
-    public Iterator<T> iterator() {
-        return new Iterator<>();
+    public java.util.Iterator<Item> iterator() {
+        return new Iterator();
     }
 
-    private class Iterator<T> implements java.util.Iterator<T> {
-        private Node[] nodes;
+    private class Iterator implements java.util.Iterator<Item> {
+        private Node<Item>[] nodes;
         private int index;
 
-        public Iterator() {
-            Node node = root;
+        Iterator() {
+            Node<Item> node = root;
             nodes = new Node[size()];
 
-            for (int i =0; i < size(); i++) {
+            for (int i = 0; i < size(); i++) {
                 nodes[i] = node;
                 node = node.getNext();
             }
@@ -122,15 +126,15 @@ public class RandomizedQueue<T>  implements Iterable<T> {
 
         @Override
         public boolean hasNext() {
-            return index != size() -1;
+            return index != size();
         }
 
         @Override
-        public T next() {
-            if(!hasNext())
+        public Item next() {
+            if (index >= size())
                 throw new NoSuchElementException();
 
-            T value = (T) nodes[index].getValue();
+            Item value = nodes[index].getValue();
             index++;
 
             return value;
@@ -142,44 +146,39 @@ public class RandomizedQueue<T>  implements Iterable<T> {
         }
     }
 
-    private class Node<T> {
-        T value;
-        Node<T> next;
-        Node<T> prev;
+    private class Node<Item> {
+        Item value;
+        Node<Item> next;
+        Node<Item> prev;
 
-        private Node(T value, Node<T> next, Node<T> prev) {
+        private Node(Item value, Node<Item> next, Node<Item> prev) {
             this.value = value;
             this.next = next;
             this.prev = prev;
         }
 
-        private T getValue() {
+        private Item getValue() {
             return value;
         }
 
-        private void setValue(T value) {
-            this.value = value;
-        }
-
-        private Node<T> getNext() {
+        private Node<Item> getNext() {
             return next;
         }
 
-        private void setNext(Node<T> next) {
+        private void setNext(Node<Item> next) {
             this.next = next;
         }
 
-        private Node<T> getPrev() {
+        private Node<Item> getPrev() {
             return prev;
         }
 
-        private void setPrev(Node<T> prev) {
+        private void setPrev(Node<Item> prev) {
             this.prev = prev;
         }
     }
 
     // unit testing (required)
     public static void main(String[] args) {
-
     }
 }
