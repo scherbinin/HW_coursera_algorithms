@@ -3,12 +3,14 @@ package week2;
 
 import edu.princeton.cs.algs4.StdRandom;
 
+import java.util.NoSuchElementException;
+
 /**
  * Created by scher on 04.08.2019.
  * <p>
  * A randomized queue is similar to a stack or queue, except that the item removed is chosen uniformly at random among items in the data structure
  */
-public class RandomizedQueue<T> {
+public class RandomizedQueue<T>  implements Iterable<T> {
     private Node<T> root;
     private Node<T> last;
     private int size;
@@ -49,27 +51,43 @@ public class RandomizedQueue<T> {
     // remove and return a random item
     public T dequeue() {
         Node<T> randomNode = selectRandomNode();
+        T value = randomNode.getValue();
+        size--;
 
         if(randomNode.getPrev() != null) {
             Node<T> prevNode = randomNode.getPrev();
             prevNode.setNext(randomNode.getNext());
+
+            if(randomNode == last)
+                last = prevNode;
         }
 
         if(randomNode.getNext() != null) {
             Node<T> nextNode = randomNode.getNext();
             nextNode.setPrev(randomNode.getPrev());
+
+            if(randomNode == root)
+                root = nextNode;
         }
 
-        return randomNode.getValue();
+        if (isEmpty()) {
+            root = null;
+            last = null;
+        }
+
+        return value;
     }
 
     // return a random item (but do not remove it)
     public T sample() {
+        if(isEmpty())
+            throw new NoSuchElementException();
+
         return selectRandomNode().getValue();
     }
 
     private Node<T> selectRandomNode() {
-        int index = StdRandom.uniform(size) + 1;
+        int index = StdRandom.uniform(size);
         int curr = 0;
         Node<T> currNode = root;
 
@@ -87,20 +105,35 @@ public class RandomizedQueue<T> {
     }
 
     private class Iterator<T> implements java.util.Iterator<T> {
-        Node node = root;
+        private Node[] nodes;
+        private int index;
 
         public Iterator() {
-            //Fill here the whole order of output sequence in simple array int[]
+            Node node = root;
+            nodes = new Node[size()];
+
+            for (int i =0; i < size(); i++) {
+                nodes[i] = node;
+                node = node.getNext();
+            }
+
+            StdRandom.shuffle(nodes);
         }
 
         @Override
         public boolean hasNext() {
-            //
+            return index != size() -1;
         }
 
         @Override
         public T next() {
-            //Get next in initially generated array
+            if(!hasNext())
+                throw new NoSuchElementException();
+
+            T value = (T) nodes[index].getValue();
+            index++;
+
+            return value;
         }
 
         @Override
