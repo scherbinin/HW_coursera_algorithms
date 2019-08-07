@@ -1,4 +1,4 @@
-package week2;
+package week2.queues;
 
 import java.util.Stack;
 

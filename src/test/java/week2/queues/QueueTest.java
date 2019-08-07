@@ -2,9 +2,6 @@ package week2.queues;
 
 import org.junit.Before;
 import org.junit.Test;
-import week2.Queue;
-
-import javax.annotation.processing.SupportedAnnotationTypes;
 
 import static org.junit.Assert.assertEquals;
 

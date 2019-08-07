@@ -2,7 +2,6 @@ package week2.queues;
 
 import org.junit.Before;
 import org.junit.Test;
-import week2.RandomizedQueue;
 
 import java.util.ArrayList;
 import java.util.List;

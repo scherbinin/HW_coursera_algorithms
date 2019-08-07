@@ -1,4 +1,4 @@
-package week2;
+package week2.queues;
 
 import java.util.NoSuchElementException;
 
@@ -124,29 +124,29 @@ public class Deque<Item> implements Iterable<Item> {
         Node next;
         Node prev;
 
-        private Node(Item value, Node next, Node prev) {
+        Node(Item value, Node next, Node prev) {
             this.value = value;
             this.next = next;
             this.prev = prev;
         }
 
-        private Item getValue() {
+        Item getValue() {
             return value;
         }
 
-        private Node getNext() {
+        Node getNext() {
             return next;
         }
 
-        private void setNext(Node next) {
+        void setNext(Node next) {
             this.next = next;
         }
 
-        private Node getPrev() {
+        Node getPrev() {
             return prev;
         }
 
-        private void setPrev(Node prev) {
+        void setPrev(Node prev) {
             this.prev = prev;
         }
     }

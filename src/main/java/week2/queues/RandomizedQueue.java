@@ -1,7 +1,5 @@
-package week2;
+package week2.queues;
 
-
-import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.StdRandom;
 
 import java.util.NoSuchElementException;
@@ -151,29 +149,29 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         Node<Item> next;
         Node<Item> prev;
 
-        private Node(Item value, Node<Item> next, Node<Item> prev) {
+        Node(Item value, Node<Item> next, Node<Item> prev) {
             this.value = value;
             this.next = next;
             this.prev = prev;
         }
 
-        private Item getValue() {
+        Item getValue() {
             return value;
         }
 
-        private Node<Item> getNext() {
+        Node<Item> getNext() {
             return next;
         }
 
-        private void setNext(Node<Item> next) {
+        void setNext(Node<Item> next) {
             this.next = next;
         }
 
-        private Node<Item> getPrev() {
+        Node<Item> getPrev() {
             return prev;
         }
 
-        private void setPrev(Node<Item> prev) {
+        void setPrev(Node<Item> prev) {
             this.prev = prev;
         }
     }
