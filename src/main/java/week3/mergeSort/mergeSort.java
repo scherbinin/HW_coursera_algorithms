@@ -20,8 +20,6 @@ public class mergeSort {
       Integer[] auxiliaryArr = new Integer[right - left];
       merge(auxiliaryArr, arr, left, right, mid);
 
-      int j = 0;
-
       for (int i = 0; i < auxiliaryArr.length; i++) {
          arr[left + i] = auxiliaryArr[i];
       }
