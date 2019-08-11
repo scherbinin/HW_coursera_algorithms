@@ -44,8 +44,7 @@ public class Permutations {
             }
         }
 
-        for (int i = 0; i < aux.length; i++)
-            arr[left + i] = aux[i];
+        System.arraycopy(aux, 0, arr, left + 0, aux.length);
 
         return permutations;
     }
