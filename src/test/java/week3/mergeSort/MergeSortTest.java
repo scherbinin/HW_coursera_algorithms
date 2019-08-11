@@ -1,7 +1,6 @@
 package week3.mergeSort;
 
 import org.junit.Test;
-import week2.simpleSortings.InsertionSort;
 
 import java.util.Arrays;
 import java.util.List;
@@ -11,13 +10,13 @@ import static org.junit.Assert.assertArrayEquals;
 /**
  * Created by scher on 09.08.2019.
  */
-public class mergeSortTest {
+public class MergeSortTest {
     @Test
     public void testMergingOfTwoSortedArrays2() {
         Integer[] arr = {-1,2, 3,-2,1,10,12,};
         Integer[] rez = new Integer[arr.length];
 
-        new mergeSort().merge(rez, arr, 0, arr.length, 3);
+        new MergeSort().merge(rez, arr, 0, arr.length, 3);
 
     }
 
@@ -30,7 +29,7 @@ public class mergeSortTest {
         initialData.toArray(actual);
         Arrays.sort(initialData.toArray(expected));
 
-        new mergeSort().sort(actual);
+        new MergeSort().sort(actual);
 
         assertArrayEquals(actual, expected);
     }

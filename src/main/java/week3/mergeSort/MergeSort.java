@@ -3,7 +3,7 @@ package week3.mergeSort;
 /**
  * Created by scher on 08.08.2019.
  */
-public class mergeSort {
+public class MergeSort {
 
    public void sort(Integer[] arr) {
       sort(arr, 0, arr.length);
