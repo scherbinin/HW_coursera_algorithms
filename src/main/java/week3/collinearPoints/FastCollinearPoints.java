@@ -1,11 +1,47 @@
 package week3.collinearPoints;
 
+import edu.princeton.cs.algs4.In;
+import edu.princeton.cs.algs4.StdDraw;
+import edu.princeton.cs.algs4.StdOut;
+
+import java.util.Arrays;
+
 /**
  * Created by scher on 12.08.2019.
  */
 public class FastCollinearPoints {
     private LineSegment[] lineSegments;
     private int size = 0;
+
+    public static void main(String[] args) {
+
+        // read the n points from a file
+        In in = new In(args[0]);
+        int n = in.readInt();
+        Point[] points = new Point[n];
+        for (int i = 0; i < n; i++) {
+            int x = in.readInt();
+            int y = in.readInt();
+            points[i] = new Point(x, y);
+        }
+
+        // draw the points
+        StdDraw.enableDoubleBuffering();
+        StdDraw.setXscale(0, 32768);
+        StdDraw.setYscale(0, 32768);
+        for (Point p : points) {
+            p.draw();
+        }
+        StdDraw.show();
+
+        // print and draw the line segments
+        FastCollinearPoints collinear = new FastCollinearPoints(points);
+        for (LineSegment segment : collinear.segments()) {
+            StdOut.println(segment);
+            segment.draw();
+        }
+        StdDraw.show();
+    }
 
     // finds all line segments containing 4 points
     public FastCollinearPoints(Point[] points) {
@@ -18,20 +54,55 @@ public class FastCollinearPoints {
     }
 
     private void calculateLineSegments(Point[] points) {
+        LineSegment[] lines = new LineSegment[points.length];
+
+        //Apply sort by distance
+        Arrays.sort(points);
+
         for (int startPointIndex = 0; startPointIndex < points.length; startPointIndex++) {
             Point startPoint = points[startPointIndex];
             Point[] sortedBySlope = MergeSort.sort(points, startPointIndex);
-            int indexOfLastCollinearPoint = 0;
+            int pointAmountOnSameSlope = 0;
+            Point maxPoint = startPoint;
+            Point minPoint = startPoint;
 
             for (int j = 1; j < sortedBySlope.length; j++) {
                 if(startPoint.slopeOrder().compare(sortedBySlope[j-1], sortedBySlope[j]) == 0) {
-                    indexOfLastCollinearPoint = j;
+
+                    //We should find the min point also, to prevent overlapped lines: we need only the biggest and smallest points
+                    //If start point is bigger that min point - that means that point already laying on the segment
+                    if(minPoint.compareTo(sortedBySlope[j]) > 0)
+                        minPoint = sortedBySlope[j];
+
+                    //Uncomment it in case first Point in 'sortedBySlope' is the highest point.
+                    if(minPoint.compareTo(sortedBySlope[j-1]) > 0)
+                        minPoint = sortedBySlope[j-1];
+
+                    //Because we sorted points by size, current startPoint will be the smallest and first point of the line, we need only higher points
+                    if(startPoint.compareTo(sortedBySlope[j]) < 0) {
+                        //Need memorize the highest point
+                        if(maxPoint.compareTo(sortedBySlope[j]) < 0)
+                            maxPoint = sortedBySlope[j];
+
+                        //Uncomment it in case first Point in 'sortedBySlope' is the highest point.
+                        if(maxPoint.compareTo(sortedBySlope[j-1]) < 0)
+                            maxPoint = sortedBySlope[j-1];
+
+                        pointAmountOnSameSlope++;
+                    }
                 }
             }
 
-            if(indexOfLastCollinearPoint >= 4)
-                lineSegments[size++] = new LineSegment(startPoint, sortedBySlope[indexOfLastCollinearPoint]);
+            //We don't count 'startPoint', so we need just 3 next point on slope
+            if(pointAmountOnSameSlope >=2) {
+                if(startPoint.equals(minPoint))
+                    lines[size++] = new LineSegment(minPoint, maxPoint);
+            }
         }
+
+        //Because we can't predict the amount of line segments initially, we use the draft array
+        lineSegments = new LineSegment[size];
+        System.arraycopy(lines, 0, lineSegments, 0, size);
     }
 
     // the number of line segments
@@ -55,7 +126,7 @@ public class FastCollinearPoints {
                 sortedPoints[ind++] = arr[k];
             }
 
-            sort(arr, 0, sortedPoints.length, arr[startPointIndex]);
+            sort(sortedPoints, 0, sortedPoints.length, arr[startPointIndex]);
 
             return sortedPoints;
         }
@@ -89,9 +160,7 @@ public class FastCollinearPoints {
                 }
             }
 
-            for (int i = 0; i < aux.length; i++) {
-                arr[left + i] = aux[i];
-            }
+            System.arraycopy(aux, 0, arr, left, aux.length);
         }
     }
 }

@@ -20,7 +20,7 @@ public class Point implements Comparable<Point> {
 
    // draws this point
    public void draw() {
-      final double radius = 1.5;
+      final double radius = 3.5;
 
       StdDraw.setPenColor(Color.BLACK);
       StdDraw.filledCircle(x, y, radius);
@@ -31,7 +31,7 @@ public class Point implements Comparable<Point> {
       draw();
       that.draw();
 
-      StdDraw.setPenColor(Color.YELLOW);
+      StdDraw.setPenColor(Color.RED);
       StdDraw.line(this.x, this.y, that.x, that.y);
    }
 
@@ -58,7 +58,13 @@ public class Point implements Comparable<Point> {
       if (deltaX == 0)
          return Double.MAX_VALUE;
 
-      return (that.y - this.y) / deltaX;
+      double slope = (that.y - this.y) / deltaX;
+
+      //Because -0.0 not equal 0.0. But they are should be equal
+      if(slope == 0)
+         return 0;
+
+      return slope;
    }
 
    // compare two points by slopes they make with this point
