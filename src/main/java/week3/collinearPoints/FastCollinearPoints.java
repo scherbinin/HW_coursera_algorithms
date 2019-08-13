@@ -6,12 +6,18 @@ import edu.princeton.cs.algs4.StdOut;
 
 import java.util.Arrays;
 
-/**
- * Created by scher on 12.08.2019.
- */
 public class FastCollinearPoints {
-    private LineSegment[] lineSegments;
+    private LineSegment[] lineSegments = new LineSegment[0];
     private int size = 0;
+
+    // finds all line segments containing 4 points
+    public FastCollinearPoints(Point[] points) {
+        if (isValidateInputData(points)) {
+            Point[] internalCollection = new Point[points.length];
+            System.arraycopy(points, 0, internalCollection, 0, points.length);
+            calculateLineSegments(internalCollection);
+        }
+    }
 
     public static void main(String[] args) {
 
@@ -43,20 +49,27 @@ public class FastCollinearPoints {
         StdDraw.show();
     }
 
-    // finds all line segments containing 4 points
-    public FastCollinearPoints(Point[] points) {
-        lineSegments = new LineSegment[points.length];
+    private boolean isValidateInputData(Point[] points) {
+        if (points == null)
+            throw new IllegalArgumentException();
 
-        if (points.length < 4)
-            return;
+        for (int i = 0; i < points.length; i++) {
+            for (int j = i + 1; j < points.length; j++) {
+                if (points[i] == null || points[j] == null)
+                    throw new IllegalArgumentException();
 
-        calculateLineSegments(points);
+                if (points[i].compareTo(points[j]) == 0)
+                    throw new IllegalArgumentException();
+            }
+        }
+
+        return points.length >= 4;
     }
 
     private void calculateLineSegments(Point[] points) {
         LineSegment[] lines = new LineSegment[points.length];
 
-        //Apply sort by distance
+        // Apply sort by distance
         Arrays.sort(points);
 
         for (int startPointIndex = 0; startPointIndex < points.length; startPointIndex++) {
@@ -67,40 +80,40 @@ public class FastCollinearPoints {
             Point minPoint = startPoint;
 
             for (int j = 1; j < sortedBySlope.length; j++) {
-                if(startPoint.slopeOrder().compare(sortedBySlope[j-1], sortedBySlope[j]) == 0) {
+                if (startPoint.slopeOrder().compare(sortedBySlope[j - 1], sortedBySlope[j]) == 0) {
 
-                    //We should find the min point also, to prevent overlapped lines: we need only the biggest and smallest points
-                    //If start point is bigger that min point - that means that point already laying on the segment
-                    if(minPoint.compareTo(sortedBySlope[j]) > 0)
+                    // We should find the min point also, to prevent overlapped lines: we need only the biggest and smallest points
+                    // If start point is bigger that min point - that means that point already laying on the segment
+                    if (minPoint.compareTo(sortedBySlope[j]) > 0)
                         minPoint = sortedBySlope[j];
 
-                    //Uncomment it in case first Point in 'sortedBySlope' is the highest point.
-                    if(minPoint.compareTo(sortedBySlope[j-1]) > 0)
-                        minPoint = sortedBySlope[j-1];
+                    // Uncomment it in case first Point in 'sortedBySlope' is the highest point.
+                    if (minPoint.compareTo(sortedBySlope[j - 1]) > 0)
+                        minPoint = sortedBySlope[j - 1];
 
-                    //Because we sorted points by size, current startPoint will be the smallest and first point of the line, we need only higher points
-                    if(startPoint.compareTo(sortedBySlope[j]) < 0) {
-                        //Need memorize the highest point
-                        if(maxPoint.compareTo(sortedBySlope[j]) < 0)
+                    // Because we sorted points by size, current startPoint will be the smallest and first point of the line, we need only higher points
+                    if (startPoint.compareTo(sortedBySlope[j]) < 0) {
+                        // Need memorize the highest point
+                        if (maxPoint.compareTo(sortedBySlope[j]) < 0)
                             maxPoint = sortedBySlope[j];
 
-                        //Uncomment it in case first Point in 'sortedBySlope' is the highest point.
-                        if(maxPoint.compareTo(sortedBySlope[j-1]) < 0)
-                            maxPoint = sortedBySlope[j-1];
+                        // Uncomment it in case first Point in 'sortedBySlope' is the highest point.
+                        if (maxPoint.compareTo(sortedBySlope[j - 1]) < 0)
+                            maxPoint = sortedBySlope[j - 1];
 
                         pointAmountOnSameSlope++;
                     }
                 }
             }
 
-            //We don't count 'startPoint', so we need just 3 next point on slope
-            if(pointAmountOnSameSlope >=2) {
-                if(startPoint.equals(minPoint))
+            // We don't count 'startPoint', so we need just 3 next point on slope
+            if (pointAmountOnSameSlope >= 2) {
+                if (startPoint.equals(minPoint))
                     lines[size++] = new LineSegment(minPoint, maxPoint);
             }
         }
 
-        //Because we can't predict the amount of line segments initially, we use the draft array
+        // Because we can't predict the amount of line segments initially, we use the draft array
         lineSegments = new LineSegment[size];
         System.arraycopy(lines, 0, lineSegments, 0, size);
     }
@@ -115,14 +128,14 @@ public class FastCollinearPoints {
         return lineSegments;
     }
 
-    static class MergeSort {
+    private static class MergeSort {
         static Point[] sort(Point[] arr, int startPointIndex) {
-            Point[] sortedPoints = new Point[arr.length-1];
+            Point[] sortedPoints = new Point[arr.length - 1];
             int ind = 0;
 
-            //Make future sorted list by coping but missing the start point
-            for (int k = 0; k < arr.length; k++){
-                if(startPointIndex == k) continue;
+            // Make future sorted list by coping but missing the start point
+            for (int k = 0; k < arr.length; k++) {
+                if (startPointIndex == k) continue;
                 sortedPoints[ind++] = arr[k];
             }
 
@@ -142,7 +155,7 @@ public class FastCollinearPoints {
             merge(arr, left, right, mid, start);
         }
 
-        static void merge(Point[] arr, Integer left, Integer right, int mid, Point start) {
+        static void merge(Point[] arr, int left, int right, int mid, Point start) {
             int leftIndex = left;
             int midIndex = mid;
 
