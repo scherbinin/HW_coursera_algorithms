@@ -11,14 +11,14 @@ import static org.junit.Assert.assertArrayEquals;
  * Created by scher on 09.08.2019.
  */
 public class MergeSortTest {
-    @Test
-    public void testMergingOfTwoSortedArrays2() {
-        Integer[] arr = {-1,2, 3,-2,1,10,12,};
-        Integer[] rez = new Integer[arr.length];
-
-        new MergeSort().merge(rez, arr, 0, arr.length, 3);
-
-    }
+//    @Test
+//    public void testMergingOfTwoSortedArrays2() {
+//        Integer[] arr = {-1,2, 3,-2,1,10,12,};
+//        Integer[] rez = new Integer[arr.length];
+//
+//        new MergeSort().merge(rez, arr, 0, arr.length, 3);
+//
+//    }
 
     @Test
     public void testAscendingSorting() {
