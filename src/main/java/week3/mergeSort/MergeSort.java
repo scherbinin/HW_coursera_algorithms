@@ -40,6 +40,6 @@ public class MergeSort {
         }
 
 
-        System.arraycopy(aux, 0, arr, left + 0, aux.length);
+        System.arraycopy(aux, 0, arr, left, aux.length);
     }
 }
