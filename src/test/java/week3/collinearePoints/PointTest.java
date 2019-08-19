@@ -1,4 +1,4 @@
-package week3.CollinearePoints;
+package week3.collinearePoints;
 
 import org.junit.Test;
 import week3.collinearPoints.Point;
