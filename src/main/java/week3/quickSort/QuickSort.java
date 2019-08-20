@@ -1,32 +1,43 @@
 package week3.quickSort;
 
+import edu.princeton.cs.algs4.StdRandom;
+
 public class QuickSort {
     public void sort(int[] arr) {
+        StdRandom.shuffle(arr);
+        sort(arr, 0, arr.length - 1);
+    }
 
+    private void sort(int[] arr, int lo, int hi) {
+        if (hi <= lo) return;
+        int j = partition(arr, lo, hi);
+        sort(arr, lo, j - 1);
+        sort(arr, j + 1, hi);
     }
 
     //return new index of pivot element
-    public int partion(int[] arr, int lo, int hi) {
+    private int partition(int[] arr, int left, int right) {
         //Let it be the pivot element - the first in the array
-        int left = lo;
-        int right = hi;
+        //We will move it close to middle at the end
+        int leftInd = left;
+        int righInd = right + 1;
 
         while (true) {
-            while (arr[lo] < arr[--right]) {
-                if (right == lo) break;
+            while (arr[left] < arr[--righInd]) {
+                if (righInd == left) break;
             }
-            while (arr[lo] > arr[++left]) {
-                if (left == right) break;
+            while (arr[left] > arr[++leftInd]) {
+                if (leftInd == right) break;
             }
 
-            if (left >= right)
+            if (leftInd >= righInd)
                 break;
 
-            swap(arr, left, right);
+            swap(arr, leftInd, righInd);
         }
 
-        swap(arr, lo, right);
-        return right;
+        swap(arr, left, righInd);
+        return righInd;
     }
 
     private void swap(int[] arr, int i, int j) {

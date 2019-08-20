@@ -6,8 +6,13 @@ public class quickSortTest {
     @Test
     public void testPartionWorkability() {
         QuickSort quickSort = new QuickSort();
-        int[] arr = {10, 1, 23, 5, 45, 3, 46, 7, 2, 3, -1};
+        int[] arr = {10, 1, 23, 5, 45, 3, 46, 7, 2, 3, -1, 16};
 
-        int i = quickSort.partion(arr, 0, arr.length);
+        quickSort.sort(arr);
+
+        for (int item : arr) {
+            System.out.print(item + ", ");
+        }
+
     }
 }

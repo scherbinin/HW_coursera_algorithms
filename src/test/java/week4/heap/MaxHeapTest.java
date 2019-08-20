@@ -36,7 +36,7 @@ public class MaxHeapTest {
     }
 
     @Test
-    public void testDeleting_expectedSortedDescendingOutput() {
+    public void testHeapSort() {
         List<Integer> arr = Arrays.asList(0,10, -1,-4,22,44,5,2,1,-12);
         List<Integer> expectedArr = new ArrayList<>(arr);
         expectedArr.sort(this::descComparator);
@@ -51,6 +51,22 @@ public class MaxHeapTest {
            rez.add(maxHeap.delete());
 
         assertArrayEquals(expectedArr.toArray(),rez.toArray());
+    }
+
+    @Test
+    public void test6InsertionAnd4RandomDeletion_ExpectedRightOrderAndEmptyHeap() {
+        maxHeap.insert(1);
+        maxHeap.insert(2);
+        maxHeap.insert(3);
+        maxHeap.insert(4);
+        maxHeap.insert(5);
+        maxHeap.insert(6);
+        int value = maxHeap.delRandom();
+        value = maxHeap.delRandom();
+        value = maxHeap.delRandom();
+        value = maxHeap.delRandom();
+
+        int size = maxHeap.size();
     }
 
     private int descComparator(Integer o1, Integer o2) {

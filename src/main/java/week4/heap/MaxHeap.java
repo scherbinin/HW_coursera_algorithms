@@ -1,5 +1,7 @@
 package week4.heap;
 
+import edu.princeton.cs.algs4.StdRandom;
+
 /**
  * Created by scher on 19.08.2019.
  */
@@ -8,6 +10,7 @@ public class MaxHeap {
     private final int ROOT_INDEX = 1;
     private int[] array;
     private int currentSize;
+    private int randomKey;
 
     public MaxHeap(int count) {
         if (count < 2) {
@@ -34,6 +37,25 @@ public class MaxHeap {
         swap(ROOT_INDEX, currentSize);
         array[currentSize--] = 0;
         sinkDown(ROOT_INDEX);
+
+        return deletedVal;
+    }
+
+    public int sample() {
+        randomKey = StdRandom.uniform(currentSize) + 1;
+
+        return randomKey;
+    }
+
+    public int delRandom() {
+        if(randomKey == 0)
+            sample();
+
+        int deletedVal = array[randomKey];
+        swap(randomKey, currentSize);
+        array[currentSize--] = 0;
+        sinkDown(randomKey);
+        swimUp(randomKey);
 
         return deletedVal;
     }
