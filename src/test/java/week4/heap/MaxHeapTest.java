@@ -61,12 +61,22 @@ public class MaxHeapTest {
         maxHeap.insert(4);
         maxHeap.insert(5);
         maxHeap.insert(6);
+        maxHeap.insert(7);
+        maxHeap.insert(8);
+        maxHeap.insert(9);
         int value = maxHeap.delRandom();
+        value = maxHeap.delRandom();
+        value = maxHeap.delRandom();
+        value = maxHeap.delRandom();
+        value = maxHeap.delRandom();
+        value = maxHeap.delRandom();
         value = maxHeap.delRandom();
         value = maxHeap.delRandom();
         value = maxHeap.delRandom();
 
         int size = maxHeap.size();
+
+        assertEquals(0, size);
     }
 
     private int descComparator(Integer o1, Integer o2) {

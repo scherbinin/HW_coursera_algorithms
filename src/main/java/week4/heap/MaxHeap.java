@@ -33,6 +33,9 @@ public class MaxHeap {
     }
 
     public int delete() {
+        if(currentSize == 1)
+            throw new IllegalArgumentException("Heap is empty");
+
         int deletedVal = array[ROOT_INDEX];
         swap(ROOT_INDEX, currentSize);
         array[currentSize--] = 0;
@@ -48,14 +51,20 @@ public class MaxHeap {
     }
 
     public int delRandom() {
-        if(randomKey == 0)
-            sample();
+        if(currentSize == 1)
+            throw new IllegalArgumentException("Heap is empty");
+
+        sample();
 
         int deletedVal = array[randomKey];
         swap(randomKey, currentSize);
         array[currentSize--] = 0;
-        sinkDown(randomKey);
-        swimUp(randomKey);
+
+        //if we didn't remove the last node, sink and swim operation is required
+        if (randomKey <= currentSize) {
+            sinkDown(randomKey);
+            swimUp(randomKey);
+        }
 
         return deletedVal;
     }
