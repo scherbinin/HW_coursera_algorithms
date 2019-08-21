@@ -1,10 +1,9 @@
 package week4.PazzleByAstart;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedList;
+import edu.princeton.cs.algs4.MinPQ;
+import java.util.Objects;
 
-public class Board {
+public class Board implements Comparable<Board> {
     private int[][] tiles;
 
     // create a board from an n-by-n array of tiles,
@@ -17,6 +16,7 @@ public class Board {
     }
 
     // string representation of this board
+    @Override
     public String toString() {
         StringBuilder str = new StringBuilder();
 
@@ -42,10 +42,10 @@ public class Board {
 
         for (int i = 0; i < tiles.length; i++) {
             for (int j = 0; j < tiles[i].length; j++) {
-                int expectedNumber = i * tiles.length + j;
+                int expectedNumber = i * tiles.length + j +1;
 
-                //Last position at n^2 is placed by Zero title
-                if (expectedNumber >= tiles.length * tiles.length - 2)
+                //Last position at n^2 is placed by Zero title, we don't need analyze it
+                if (expectedNumber > tiles.length * tiles.length - 1)
                     continue;
 
                 if (expectedNumber != tiles[i][j])
@@ -61,11 +61,11 @@ public class Board {
         int distance = 0;
 
         for (int i = 0; i < tiles.length; i++) {
-            for (int j = 0; j < tiles[i].length - 1; j++) {
-                int expectedNumber = i * tiles.length + j;
-                if (expectedNumber != tiles[i][j]) {
-                    int vertDist = tiles[i][j] / i;
-                    int horizDist = tiles[i][j] % i;
+            for (int j = 0; j < tiles[i].length; j++) {
+                int expectedNumber = i * tiles.length + j +1;
+                if (expectedNumber != tiles[i][j] && tiles[i][j] != 0) {
+                    int vertDist = (tiles[i][j] - 1) / tiles.length;
+                    int horizDist = (tiles[i][j] - 1) % (tiles.length);
 
                     distance += Math.abs(i - vertDist);
                     distance += Math.abs(j - horizDist);
@@ -78,7 +78,7 @@ public class Board {
 
     // is this board the goal board?
     public boolean isGoal() {
-        return hamming() == 0 && tiles[tiles.length - 1][tiles.length - 2] == 0;
+        return hamming() == 0 && tiles[tiles.length - 1][tiles.length - 1] == 0;
     }
 
     // does this board equal y?
@@ -108,7 +108,7 @@ public class Board {
     public Iterable<Board> neighbors() {
         int zeroX = -1;
         int zeroY = -1;
-        LinkedList<Board> res = new LinkedList<>();
+        MinPQ<Board> res = new MinPQ<>();
 
         for (int i = 0; i < tiles.length; i++) {
             for (int j = 0; j < tiles[i].length; j++) {
@@ -119,18 +119,49 @@ public class Board {
             }
         }
 
-        if(zeroX == -1)
+        if (zeroX == -1)
             throw new IllegalArgumentException("The empty tile not found");
 
-//        if(zeroX > 0)
-//            Board up =
+        Board upNeighbor = getUpNeighborBoard(zeroX, zeroY);
+        Board downNeighbor = getDownNeighborBoard(zeroX, zeroY);
+        Board leftNeighbor = getLeftNeighborBoard(zeroX, zeroY);
+        Board rightNeighbor = getRightNeighborBoard(zeroX, zeroY);
 
-        return Arrays.asList();
+        if (Objects.nonNull(upNeighbor))
+            res.insert(upNeighbor);
+        if (Objects.nonNull(downNeighbor))
+            res.insert(downNeighbor);
+        if (Objects.nonNull(leftNeighbor))
+            res.insert(leftNeighbor);
+        if (Objects.nonNull(rightNeighbor))
+            res.insert(rightNeighbor);
+
+        return res;
     }
 
     // a board that is obtained by exchanging any pair of tiles
     public Board twin() {
+        int firstTileX = 0;
+        int firstTileY =0;
+        int secondTileX = 1;
+        int secondTileY = 0;
 
+        int[][] tilesArrCopy = new int[tiles.length][tiles.length];
+
+        for (int i = 0; i < tiles.length; i++) {
+            System.arraycopy(tiles[i], 0, tilesArrCopy[i], 0, tiles.length);
+        }
+
+        while(tilesArrCopy[firstTileX][firstTileY] == 0)
+            firstTileY++;
+        while(tilesArrCopy[secondTileX][secondTileY] == 0)
+            secondTileY++;
+
+        int temp = tilesArrCopy[firstTileX][firstTileY];
+        tilesArrCopy[firstTileX][firstTileY] = tilesArrCopy[secondTileX][secondTileY];
+        tilesArrCopy[secondTileX][secondTileY] = temp;
+
+        return new Board(tilesArrCopy);
     }
 
 
@@ -140,10 +171,10 @@ public class Board {
     }
 
     private Board getUpNeighborBoard(int zeroX, int zeroY) {
-        if(zeroX > 0) {
+        if (zeroX > 0) {
             int[][] tilesArrCopy = new int[tiles.length][tiles.length];
 
-            for (int i = 0; i< tiles.length; i++) {
+            for (int i = 0; i < tiles.length; i++) {
                 System.arraycopy(tiles[i], 0, tilesArrCopy[i], 0, tiles.length);
             }
 
@@ -157,10 +188,10 @@ public class Board {
     }
 
     private Board getDownNeighborBoard(int zeroX, int zeroY) {
-        if(zeroX < tiles.length - 1) {
+        if (zeroX < tiles.length - 1) {
             int[][] tilesArrCopy = new int[tiles.length][tiles.length];
 
-            for (int i = 0; i< tiles.length; i++) {
+            for (int i = 0; i < tiles.length; i++) {
                 System.arraycopy(tiles[i], 0, tilesArrCopy[i], 0, tiles.length);
             }
 
@@ -174,10 +205,10 @@ public class Board {
     }
 
     private Board getLeftNeighborBoard(int zeroX, int zeroY) {
-        if(zeroY > 0) {
+        if (zeroY > 0) {
             int[][] tilesArrCopy = new int[tiles.length][tiles.length];
 
-            for (int i = 0; i< tiles.length; i++) {
+            for (int i = 0; i < tiles.length; i++) {
                 System.arraycopy(tiles[i], 0, tilesArrCopy[i], 0, tiles.length);
             }
 
@@ -191,10 +222,10 @@ public class Board {
     }
 
     private Board getRightNeighborBoard(int zeroX, int zeroY) {
-        if(zeroY < tiles.length -1) {
+        if (zeroY < tiles.length - 1) {
             int[][] tilesArrCopy = new int[tiles.length][tiles.length];
 
-            for (int i = 0; i< tiles.length; i++) {
+            for (int i = 0; i < tiles.length; i++) {
                 System.arraycopy(tiles[i], 0, tilesArrCopy[i], 0, tiles.length);
             }
 
@@ -205,5 +236,15 @@ public class Board {
         }
 
         return null;
+    }
+
+    @Override
+    public int compareTo(Board o) {
+        if(manhattan() - o.manhattan() < 0)
+            return -1;
+        else if(manhattan() == o.manhattan())
+            return 0;
+        else
+            return 1;
     }
 }
