@@ -27,6 +27,7 @@ public class Board {
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();
+        str.append(dimension()).append("\n");
 
         for (int[] tile : tiles) {
             for (int aTile : tile) {
