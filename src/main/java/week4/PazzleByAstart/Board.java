@@ -1,10 +1,11 @@
 package week4.PazzleByAstart;
 
-import edu.princeton.cs.algs4.MinPQ;
+import edu.princeton.cs.algs4.LinkedStack;
 import java.util.Objects;
 
-public class Board implements Comparable<Board> {
+public class Board {
     private int[][] tiles;
+    private int manhattanDist;
 
     // create a board from an n-by-n array of tiles,
     // where tiles[row][col] = tile at (row, col)
@@ -13,6 +14,8 @@ public class Board implements Comparable<Board> {
             throw new IllegalArgumentException("The input array is null");
 
         this.tiles = tiles;
+        //Caching value to except multiple calculations
+        this.manhattanDist = calculateManhattanDist();
     }
 
     // string representation of this board
@@ -58,22 +61,7 @@ public class Board implements Comparable<Board> {
 
     // sum of Manhattan distances between tiles and goal
     public int manhattan() {
-        int distance = 0;
-
-        for (int i = 0; i < tiles.length; i++) {
-            for (int j = 0; j < tiles[i].length; j++) {
-                int expectedNumber = i * tiles.length + j +1;
-                if (expectedNumber != tiles[i][j] && tiles[i][j] != 0) {
-                    int vertDist = (tiles[i][j] - 1) / tiles.length;
-                    int horizDist = (tiles[i][j] - 1) % (tiles.length);
-
-                    distance += Math.abs(i - vertDist);
-                    distance += Math.abs(j - horizDist);
-                }
-            }
-        }
-
-        return distance;
+        return manhattanDist;
     }
 
     // is this board the goal board?
@@ -108,7 +96,7 @@ public class Board implements Comparable<Board> {
     public Iterable<Board> neighbors() {
         int zeroX = -1;
         int zeroY = -1;
-        MinPQ<Board> res = new MinPQ<>();
+        LinkedStack<Board> res = new LinkedStack<>();
 
         for (int i = 0; i < tiles.length; i++) {
             for (int j = 0; j < tiles[i].length; j++) {
@@ -128,13 +116,13 @@ public class Board implements Comparable<Board> {
         Board rightNeighbor = getRightNeighborBoard(zeroX, zeroY);
 
         if (Objects.nonNull(upNeighbor))
-            res.insert(upNeighbor);
+            res.push(upNeighbor);
         if (Objects.nonNull(downNeighbor))
-            res.insert(downNeighbor);
+            res.push(downNeighbor);
         if (Objects.nonNull(leftNeighbor))
-            res.insert(leftNeighbor);
+            res.push(leftNeighbor);
         if (Objects.nonNull(rightNeighbor))
-            res.insert(rightNeighbor);
+            res.push(rightNeighbor);
 
         return res;
     }
@@ -168,6 +156,25 @@ public class Board implements Comparable<Board> {
     // unit testing (not graded)
     public static void main(String[] args) {
 
+    }
+
+    private int calculateManhattanDist() {
+        int distance = 0;
+
+        for (int i = 0; i < tiles.length; i++) {
+            for (int j = 0; j < tiles[i].length; j++) {
+                int expectedNumber = i * tiles.length + j +1;
+                if (expectedNumber != tiles[i][j] && tiles[i][j] != 0) {
+                    int vertDist = (tiles[i][j] - 1) / tiles.length;
+                    int horizDist = (tiles[i][j] - 1) % (tiles.length);
+
+                    distance += Math.abs(i - vertDist);
+                    distance += Math.abs(j - horizDist);
+                }
+            }
+        }
+
+        return distance;
     }
 
     private Board getUpNeighborBoard(int zeroX, int zeroY) {
@@ -238,13 +245,39 @@ public class Board implements Comparable<Board> {
         return null;
     }
 
-    @Override
-    public int compareTo(Board o) {
-        if(manhattan() - o.manhattan() < 0)
-            return -1;
-        else if(manhattan() == o.manhattan())
-            return 0;
-        else
-            return 1;
+    static class SearchNode implements Comparable<SearchNode> {
+        private Board board;
+        private SearchNode prevSearchNode;
+        private int movesNumber;
+        private int priority;
+
+        public SearchNode(Board board, SearchNode prevSearchNode, int movesNumber) {
+            this.board = board;
+            this.prevSearchNode = prevSearchNode;
+            this.movesNumber = movesNumber;
+
+            priority = board.manhattan() + movesNumber;
+        }
+
+        public Board getBoard() {
+            return board;
+        }
+
+        public SearchNode getPrevSearchNode() {
+            return prevSearchNode;
+        }
+
+        public int getMovesNumber() {
+            return movesNumber;
+        }
+
+        public int getPriority() {
+            return priority;
+        }
+
+        @Override
+        public int compareTo(SearchNode o) {
+            return Integer.compare(this.priority, o.getPriority());
+        }
     }
 }
