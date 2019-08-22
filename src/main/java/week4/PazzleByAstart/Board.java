@@ -1,11 +1,12 @@
 package week4.PazzleByAstart;
 
 import edu.princeton.cs.algs4.LinkedStack;
+
 import java.util.Objects;
 
 public class Board {
-    private int[][] tiles;
-    private int manhattanDist;
+    private final int[][] tiles;
+    private final int manhattanDist;
 
     // create a board from an n-by-n array of tiles,
     // where tiles[row][col] = tile at (row, col)
@@ -13,8 +14,12 @@ public class Board {
         if (tiles == null)
             throw new IllegalArgumentException("The input array is null");
 
-        this.tiles = tiles;
-        //Caching value to except multiple calculations
+        this.tiles = new int[tiles.length][tiles.length];
+        for (int i = 0; i < tiles.length; i++) {
+            System.arraycopy(tiles[i], 0, this.tiles[i], 0, tiles.length);
+        }
+
+        // Caching value to except multiple calculations
         this.manhattanDist = calculateManhattanDist();
     }
 
@@ -45,9 +50,9 @@ public class Board {
 
         for (int i = 0; i < tiles.length; i++) {
             for (int j = 0; j < tiles[i].length; j++) {
-                int expectedNumber = i * tiles.length + j +1;
+                int expectedNumber = i * tiles.length + j + 1;
 
-                //Last position at n^2 is placed by Zero title, we don't need analyze it
+                // Last position at n^2 is placed by Zero title, we don't need analyze it
                 if (expectedNumber > tiles.length * tiles.length - 1)
                     continue;
 
@@ -130,7 +135,7 @@ public class Board {
     // a board that is obtained by exchanging any pair of tiles
     public Board twin() {
         int firstTileX = 0;
-        int firstTileY =0;
+        int firstTileY = 0;
         int secondTileX = 1;
         int secondTileY = 0;
 
@@ -140,9 +145,9 @@ public class Board {
             System.arraycopy(tiles[i], 0, tilesArrCopy[i], 0, tiles.length);
         }
 
-        while(tilesArrCopy[firstTileX][firstTileY] == 0)
+        while (tilesArrCopy[firstTileX][firstTileY] == 0)
             firstTileY++;
-        while(tilesArrCopy[secondTileX][secondTileY] == 0)
+        while (tilesArrCopy[secondTileX][secondTileY] == 0)
             secondTileY++;
 
         int temp = tilesArrCopy[firstTileX][firstTileY];
@@ -152,18 +157,12 @@ public class Board {
         return new Board(tilesArrCopy);
     }
 
-
-    // unit testing (not graded)
-    public static void main(String[] args) {
-
-    }
-
     private int calculateManhattanDist() {
         int distance = 0;
 
         for (int i = 0; i < tiles.length; i++) {
             for (int j = 0; j < tiles[i].length; j++) {
-                int expectedNumber = i * tiles.length + j +1;
+                int expectedNumber = i * tiles.length + j + 1;
                 if (expectedNumber != tiles[i][j] && tiles[i][j] != 0) {
                     int vertDist = (tiles[i][j] - 1) / tiles.length;
                     int horizDist = (tiles[i][j] - 1) % (tiles.length);
@@ -243,43 +242,5 @@ public class Board {
         }
 
         return null;
-    }
-
-    static class SearchNode implements Comparable<SearchNode> {
-        private Board board;
-        private SearchNode prevSearchNode;
-        private int movesNumber;
-        private int priority;
-
-        public SearchNode(Board board, SearchNode prevSearchNode) {
-            this.board = board;
-            this.prevSearchNode = prevSearchNode;
-
-            if(prevSearchNode != null)
-                movesNumber = prevSearchNode.getMovesNumber() + 1;
-
-            priority = board.manhattan() + movesNumber;
-        }
-
-        public Board getBoard() {
-            return board;
-        }
-
-        public SearchNode getPrevSearchNode() {
-            return prevSearchNode;
-        }
-
-        public int getMovesNumber() {
-            return movesNumber;
-        }
-
-        public int getPriority() {
-            return priority;
-        }
-
-        @Override
-        public int compareTo(SearchNode o) {
-            return Integer.compare(this.priority, o.getPriority());
-        }
     }
 }
