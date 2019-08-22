@@ -7,7 +7,6 @@ import java.util.Objects;
 
 public class Solver {
     private Board.SearchNode solution;
-    private int movesAmount = 0;
     private boolean initialBoardNotSolvable;
 
     // find a solution to the initial board (using the A* algorithm)
@@ -18,8 +17,8 @@ public class Solver {
         MinPQ<Board.SearchNode> workStructure1 = new MinPQ<>();
         MinPQ<Board.SearchNode> workStructure2 = new MinPQ<>();
 
-        Board.SearchNode currSearchNode1 = new Board.SearchNode(initial, null, movesAmount);
-        Board.SearchNode currSearchNode2 = new Board.SearchNode(initial.twin(), null, movesAmount);
+        Board.SearchNode currSearchNode1 = new Board.SearchNode(initial, null);
+        Board.SearchNode currSearchNode2 = new Board.SearchNode(initial.twin(), null);
 
         workStructure1.insert(currSearchNode1);
         workStructure2.insert(currSearchNode2);
@@ -34,7 +33,6 @@ public class Solver {
 
             currSearchNode1 = addNeighborsToHeapAndFindTheMinNode(workStructure1, currSearchNode1);
 //            currSearchNode2 = addNeighborsToHeapAndFindTheMinNode(workStructure2, currSearchNode2);
-            movesAmount++;
         }
 
         if (initialBoardNotSolvable)
@@ -48,9 +46,9 @@ public class Solver {
             //Optimization: exclude the duplicates: prev board and one of the neighbors of current board
             if (Objects.nonNull(currSearchNode.getPrevSearchNode())) {
                 if (!neighbor.equals(currSearchNode.getPrevSearchNode().getBoard()))
-                    workStructure.insert(new Board.SearchNode(neighbor, currSearchNode, movesAmount));
+                    workStructure.insert(new Board.SearchNode(neighbor, currSearchNode));
             } else {
-                workStructure.insert(new Board.SearchNode(neighbor, currSearchNode, movesAmount));
+                workStructure.insert(new Board.SearchNode(neighbor, currSearchNode));
             }
         }
 

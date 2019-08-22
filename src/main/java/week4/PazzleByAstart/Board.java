@@ -251,10 +251,12 @@ public class Board {
         private int movesNumber;
         private int priority;
 
-        public SearchNode(Board board, SearchNode prevSearchNode, int movesNumber) {
+        public SearchNode(Board board, SearchNode prevSearchNode) {
             this.board = board;
             this.prevSearchNode = prevSearchNode;
-            this.movesNumber = movesNumber;
+
+            if(prevSearchNode != null)
+                movesNumber = prevSearchNode.getMovesNumber() + 1;
 
             priority = board.manhattan() + movesNumber;
         }
@@ -268,7 +270,7 @@ public class Board {
         }
 
         public int getMovesNumber() {
-            return movesNumber + 1;
+            return movesNumber;
         }
 
         public int getPriority() {

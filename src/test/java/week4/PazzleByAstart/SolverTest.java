@@ -9,16 +9,13 @@ public class SolverTest {
 //                {7,2,6},
 //                {5,4,8}};
 
-        int[][] tilesArr = {{1, 2, 3},
-                        {7, 4, 6},
-                        {5, 0, 8}};
+        int[][] tilesArr = {{1, 0, 3},
+                        {7, 2, 6},
+                        {5, 4, 8}};
 
         Board board = new Board(tilesArr);
         Solver solver = new Solver(board);
 
-        System.out.println("----------------");
-        System.out.println("Is solvable: " + solver.isSolvable());
-        System.out.println("Number of moves: " + solver.moves());
         System.out.println("\nThe print out of the solution path: ");
         System.out.println("---- initial board ----");
 
@@ -27,5 +24,7 @@ public class SolverTest {
             System.out.println("-------------");
         }
 
+        System.out.println("Is solvable: " + solver.isSolvable());
+        System.out.println("Number of moves: " + solver.moves());
     }
 }
