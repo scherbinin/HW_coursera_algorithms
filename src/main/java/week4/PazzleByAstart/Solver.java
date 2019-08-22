@@ -31,8 +31,6 @@ public class Solver {
 
             currSearchNode1 = addNeighborsToHeapAndFindTheMinNode(workStructure1, currSearchNode1);
             currSearchNode2 = addNeighborsToHeapAndFindTheMinNode(workStructure2, currSearchNode2);
-
-            movesAmount++;
         }
 
         if (initialBoardNotSolvable)
@@ -42,6 +40,9 @@ public class Solver {
     }
 
     private Board.SearchNode addNeighborsToHeapAndFindTheMinNode(MinPQ<Board.SearchNode> workStructure, Board.SearchNode currSearchNode) {
+        //Increase the moves amount
+        movesAmount++;
+
         for (Board neighbor : currSearchNode.getBoard().neighbors()) {
             //Optimization: exclude the duplicates: prev board and one of the neighbors of current board
             if (Objects.nonNull(currSearchNode.getPrevSearchNode()) &&
