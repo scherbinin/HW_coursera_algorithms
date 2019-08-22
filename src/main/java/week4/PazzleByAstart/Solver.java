@@ -32,7 +32,9 @@ public class Solver {
             }
 
             currSearchNode1 = addNeighborsToHeapAndFindTheMinNode(workStructure1, currSearchNode1);
-//            currSearchNode2 = addNeighborsToHeapAndFindTheMinNode(workStructure2, currSearchNode2);
+            currSearchNode2 = addNeighborsToHeapAndFindTheMinNode(workStructure2, currSearchNode2);
+            System.out.println("\n----- prior = " + currSearchNode1.getPriority() + " \n");
+            System.out.println(currSearchNode1.getBoard());
         }
 
         if (initialBoardNotSolvable)

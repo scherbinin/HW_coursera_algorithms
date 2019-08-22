@@ -72,10 +72,10 @@ public class Board {
     // does this board equal y?
     @Override
     public boolean equals(Object y) {
-        if (!(y instanceof int[][]))
+        if (!(y instanceof Board))
             return false;
 
-        int[][] newTiles = (int[][]) y;
+        int[][] newTiles = ((Board) y).tiles;
 
         if (newTiles.length != tiles.length)
             return false;
