@@ -268,7 +268,7 @@ public class Board {
         }
 
         public int getMovesNumber() {
-            return movesNumber;
+            return movesNumber + 1;
         }
 
         public int getPriority() {

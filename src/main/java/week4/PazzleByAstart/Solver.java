@@ -21,16 +21,20 @@ public class Solver {
         Board.SearchNode currSearchNode1 = new Board.SearchNode(initial, null, movesAmount);
         Board.SearchNode currSearchNode2 = new Board.SearchNode(initial.twin(), null, movesAmount);
 
+        workStructure1.insert(currSearchNode1);
+        workStructure2.insert(currSearchNode2);
+
         //We have to start solving operation for both init boards (initial and twined) simultaneously
         while (!currSearchNode1.getBoard().isGoal()) {
             //Case where the twinned board was solved, but initial don't have solution
-            if (!currSearchNode2.getBoard().isGoal()) {
+            if (currSearchNode2.getBoard().isGoal()) {
                 initialBoardNotSolvable = true;
                 break;
             }
 
             currSearchNode1 = addNeighborsToHeapAndFindTheMinNode(workStructure1, currSearchNode1);
-            currSearchNode2 = addNeighborsToHeapAndFindTheMinNode(workStructure2, currSearchNode2);
+//            currSearchNode2 = addNeighborsToHeapAndFindTheMinNode(workStructure2, currSearchNode2);
+            movesAmount++;
         }
 
         if (initialBoardNotSolvable)
@@ -40,14 +44,14 @@ public class Solver {
     }
 
     private Board.SearchNode addNeighborsToHeapAndFindTheMinNode(MinPQ<Board.SearchNode> workStructure, Board.SearchNode currSearchNode) {
-        //Increase the moves amount
-        movesAmount++;
-
         for (Board neighbor : currSearchNode.getBoard().neighbors()) {
             //Optimization: exclude the duplicates: prev board and one of the neighbors of current board
-            if (Objects.nonNull(currSearchNode.getPrevSearchNode()) &&
-                    !neighbor.equals(currSearchNode.getPrevSearchNode().getBoard()))
+            if (Objects.nonNull(currSearchNode.getPrevSearchNode())) {
+                if (!neighbor.equals(currSearchNode.getPrevSearchNode().getBoard()))
+                    workStructure.insert(new Board.SearchNode(neighbor, currSearchNode, movesAmount));
+            } else {
                 workStructure.insert(new Board.SearchNode(neighbor, currSearchNode, movesAmount));
+            }
         }
 
         return workStructure.delMin();
@@ -55,12 +59,12 @@ public class Solver {
 
     // is the initial board solvable? (see below)
     public boolean isSolvable() {
-        return initialBoardNotSolvable;
+        return !initialBoardNotSolvable;
     }
 
     // min number of moves to solve initial board
     public int moves() {
-        return movesAmount;
+        return solution.getMovesNumber();
     }
 
     // sequence of boards in a shortest solution
