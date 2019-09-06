@@ -17,7 +17,7 @@ public class RectHV {
         this.xmax = xmax;
         this.xmin = xmin;
         this.ymax = ymax;
-        this.ymax = ymin;
+        this.ymin = ymin;
 
     }
 
@@ -57,81 +57,47 @@ public class RectHV {
 
     // does this rectangle intersect that rectangle (at one or more points)?
     public boolean intersects(RectHV that) {
+        return isIntersects(this, that) || isIntersects(that, this);
+    }
+
+    private boolean isIntersects(RectHV first, RectHV second) {
         boolean belongXInterval = false;
         boolean belongYInterval = false;
         // we are checking that at least on vertex of the income Rect is belonging to current
         // When we must check opposite conditions: current Rect can belong to the income one
 
-        if (biggerOrEquals(that.xmin, this.xmin) && lessOrEquals(that.xmin, this.xmax) ||
-                biggerOrEquals(that.xmax, this.xmin) && lessOrEquals(that.xmax, this.xmax))
+        if (biggerOrEquals(second.xmin, first.xmin) && lessOrEquals(second.xmin, first.xmax) ||
+                biggerOrEquals(second.xmax, first.xmin) && lessOrEquals(second.xmax, first.xmax))
             belongXInterval = true;
 
-        if (biggerOrEquals(that.ymin, this.ymin) && lessOrEquals(that.ymin, this.ymax) ||
-                biggerOrEquals(that.ymax, this.ymin) && lessOrEquals(that.ymax, this.ymax))
+        if (biggerOrEquals(second.ymin, first.ymin) && lessOrEquals(second.ymin, first.ymax) ||
+                biggerOrEquals(second.ymax, first.ymin) && lessOrEquals(second.ymax, first.ymax))
             belongYInterval = true;
 
-        return (belongXInterval && belongYInterval) || that.intersects(this);
+        return belongXInterval && belongYInterval;
     }
 
     // Euclidean distance from point p to closest point in rectangle
     public double distanceTo(Point2D p) {
-//        boolean belongXInterval = false;
-//        boolean belongYInterval = false;
-//
-//        if (biggerOrEquals(p.x(), xmin) && lessOrEquals(p.x(), xmax))
-//            belongXInterval = true;
-//
-//        if (biggerOrEquals(p.y(), ymin) && lessOrEquals(p.y(), ymax))
-//            belongYInterval = true;
-//
-//        if (belongXInterval && belongYInterval) {
-//            return 0;
-//        } else if (belongXInterval) {
-//            return Math.abs(ymin - p.y());
-//        } else if (belongYInterval) {
-//            return Math.abs(xmin - p.x());
-//        } else {
-//            //4 cases: one of the vertex will the closest one
-//
-//
-//        }
-
-        double middleX = (xmax + xmin) / 2;
-        double middleY = (ymax + ymin) / 2;
-
-        if (lessOrEquals(middleX, p.x())) {
-            // two left points
-            if (lessOrEquals(middleY, p.x()))
-                return p.distanceTo(new Point2D(xmin, ymin));
-            else
-                return p.distanceTo(new Point2D(xmin, ymax));
-        } else {
-            // two right points
-            if (lessOrEquals(middleY, p.x()))
-                return p.distanceTo(new Point2D(xmax, ymin));
-            else
-                return p.distanceTo(new Point2D(xmax, ymax));
-        }
+        return Math.sqrt(distanceSquaredTo(p));
     }
 
     // square of Euclidean distance from point p to closest point in rectangle
     public double distanceSquaredTo(Point2D p) {
-        double middleX = (xmax + xmin) / 2;
-        double middleY = (ymax + ymin) / 2;
+        double deltaX = 0.0;
+        double deltaY = 0.0;
 
-        if (lessOrEquals(middleX, p.x())) {
-            // two left points
-            if (lessOrEquals(middleY, p.x()))
-                return p.distanceSquaredTo(new Point2D(xmin, ymin));
-            else
-                return p.distanceSquaredTo(new Point2D(xmin, ymax));
-        } else {
-            // two right points
-            if (lessOrEquals(middleY, p.x()))
-                return p.distanceSquaredTo(new Point2D(xmax, ymin));
-            else
-                return p.distanceSquaredTo(new Point2D(xmax, ymax));
-        }
+        if(lessOrEquals(p.x(), this.xmin))
+            deltaX = this.xmin - p.x();
+        else if(biggerOrEquals(p.x(), this.xmax))
+            deltaX = p.x() - this.xmax;
+
+        if(lessOrEquals(p.y(), this.ymin))
+            deltaY = this.ymin - p.x();
+        else if(biggerOrEquals(p.y(), this.ymax))
+            deltaY = p.x() - this.ymax;
+
+        return Math.pow(deltaX,2) + Math.pow(deltaY,2);
     }
 
     // does this rectangle equal that object?
@@ -151,12 +117,12 @@ public class RectHV {
     // draw to standard draw
     public void draw() {
         StdDraw.setPenColor(StdDraw.BLACK);
-        StdDraw.filledRectangle(xmin, ymin, (xmax-xmin)/2, (ymax - ymin)/2);
+        StdDraw.filledRectangle(xmin, ymin, (xmax - xmin) / 2, (ymax - ymin) / 2);
     }
 
     // string representation
     public String toString() {
-        return String.format("Point2D: Xmin=%f | Xmax=%f | Ymin=%f | Ymax=%f", xmin, xmax, ymin, ymax);
+        return String.format("Point2D: Xmin=%f | Ymin=%f | Xmax=%f | Ymax=%f", xmin, ymin, xmax, ymax);
     }
 
     private boolean lessOrEquals(double o1, double o2) {
