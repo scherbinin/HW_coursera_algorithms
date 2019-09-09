@@ -37,20 +37,22 @@ public class KdTree {
         while(Boolean.TRUE) {
             if(isVertical){
                 if(currNode.value.x() > p.x()) {
-                    // go left
+                    currNode = currNode.left;
                 } else {
-                    // go right
+                    currNode = currNode.right;
                 }
             } else {
                 if(currNode.value.y() > p.y()) {
-                    // go left
+                    currNode = currNode.left;
                 } else {
-                    // go right
+                    currNode = currNode.right;
                 }
             }
+
+            isVertical=!isVertical;
         }
 
-        isVertical=!isVertical;
+
     }
 
     private void insert(Node node) {
