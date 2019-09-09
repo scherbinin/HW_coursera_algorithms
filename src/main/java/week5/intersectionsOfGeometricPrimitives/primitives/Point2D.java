@@ -3,7 +3,7 @@ package week5.intersectionsOfGeometricPrimitives.primitives;
 import edu.princeton.cs.algs4.StdDraw;
 import java.util.Objects;
 
-public class Point2D {
+public class Point2D implements Comparable<Point2D> {
     private double x;
     private double y;
 
@@ -51,8 +51,11 @@ public class Point2D {
 
     // does this point equal that object?
     public boolean equals(Object that) {
-        if (Objects.equals(this, that))
+        if (this==that)
             return true;
+
+        if(Objects.isNull(that))
+            return false;
 
         if (!that.getClass().equals(Point2D.class))
             return false;
