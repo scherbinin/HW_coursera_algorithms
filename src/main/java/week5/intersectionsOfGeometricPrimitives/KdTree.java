@@ -1,5 +1,6 @@
 package week5.intersectionsOfGeometricPrimitives;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import edu.princeton.cs.algs4.Transaction;
 import week5.intersectionsOfGeometricPrimitives.primitives.Point2D;
 import week5.intersectionsOfGeometricPrimitives.primitives.RectHV;
@@ -16,7 +17,7 @@ public class KdTree {
 
     // is the set empty?
     public boolean isEmpty() {
-        throw new UnsupportedOperationException();
+        return Objects.isNull(root);
     }
 
     // number of points in the set
@@ -26,42 +27,60 @@ public class KdTree {
 
     // add the point to the set (if it is not already in the set)
     public void insert(Point2D p) {
-        if(Objects.isNull(p))
+        if (Objects.isNull(p))
             throw new IllegalArgumentException();
 
-        Node newNode = new Node(p);
-        Node currNode = root;
-        Boolean isVertical = true;
-
-
-        while(Boolean.TRUE) {
-            if(isVertical){
-                if(currNode.value.x() > p.x()) {
-                    currNode = currNode.left;
-                } else {
-                    currNode = currNode.right;
-                }
-            } else {
-                if(currNode.value.y() > p.y()) {
-                    currNode = currNode.left;
-                } else {
-                    currNode = currNode.right;
-                }
-            }
-
-            isVertical=!isVertical;
-        }
-
-
+        root = insert(true, root, new Node(p));
     }
 
-    private void insert(Node node) {
+    private Node insert(boolean isVertical, Node current, Node newNode) {
+        if (Objects.isNull(current))
+            return newNode;
 
+        if (isVertical) {
+            if (current.value.x() > newNode.value.x()) {
+                current.left = insert(!isVertical, current.left, newNode);
+            } else {
+                current.right = insert(!isVertical, current.right, newNode);
+            }
+        } else {
+            if (current.value.y() > newNode.value.y()) {
+                current.left = insert(!isVertical, current.left, newNode);
+            } else {
+                current.right = insert(!isVertical, current.right, newNode);
+            }
+        }
+
+        return current;
     }
 
     // does the set contain point p?
     public boolean contains(Point2D p) {
-        throw new UnsupportedOperationException();
+        if (Objects.isNull(p))
+            throw new IllegalArgumentException();
+
+        if (Objects.isNull(root))
+            return false;
+
+        Node current = root;
+        boolean isVertical = true;
+
+        while (Objects.nonNull(current)) {
+            double newVal = isVertical ? p.x() : p.y();
+            double val = isVertical ? current.value.x() : current.value.y();
+
+            if (current.value.equals(p)) {
+                return true;
+            } else if (val > newVal) {
+                current = current.left;
+            } else {
+                current = current.right;
+            }
+
+            isVertical = !isVertical;
+        }
+
+        return false;
     }
 
     // draw all points to standard draw
@@ -71,7 +90,11 @@ public class KdTree {
 
     // all points that are inside the rectangle (or on the boundary)
     public Iterable<Point2D> range(RectHV rect) {
-        throw new UnsupportedOperationException();
+        if (Objects.isNull(rect))
+            throw new IllegalArgumentException();
+
+        if (Objects.isNull(root))
+            return false;
     }
 
     // a nearest neighbor in the set to point p; null if the set is empty
@@ -84,33 +107,13 @@ public class KdTree {
         throw new UnsupportedOperationException();
     }
 
-    class Node{
+    private class Node {
         private Point2D value;
         private Node left;
         private Node right;
 
-        public Node(Point2D value) {
+        Node(Point2D value) {
             this.value = value;
-        }
-
-        public Point2D getValue() {
-            return value;
-        }
-
-        public Node getLeft() {
-            return left;
-        }
-
-        public void setLeft(Node left) {
-            this.left = left;
-        }
-
-        public Node getRight() {
-            return right;
-        }
-
-        public void setRight(Node right) {
-            this.right = right;
         }
     }
 }
