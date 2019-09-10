@@ -1,6 +1,5 @@
 package week5.intersectionsOfGeometricPrimitives;
 
-import week3.collinearPoints.Point;
 import week5.intersectionsOfGeometricPrimitives.primitives.Point2D;
 import week5.intersectionsOfGeometricPrimitives.primitives.RectHV;
 
@@ -10,6 +9,7 @@ import java.util.Objects;
 
 public class KdTree {
     private Node root;
+    private int size;
 
     // construct an empty set of points
     public KdTree() {
@@ -23,7 +23,7 @@ public class KdTree {
 
     // number of points in the set
     public int size() {
-        throw new UnsupportedOperationException();
+        return size;
     }
 
     // add the point to the set (if it is not already in the set)
@@ -32,6 +32,7 @@ public class KdTree {
             throw new IllegalArgumentException();
 
         root = insert(true, root, new Node(p));
+        size++;
     }
 
     private Node insert(boolean isVertical, Node current, Node newNode) {
@@ -179,7 +180,7 @@ public class KdTree {
     }
 
     private class Node {
-        private Point2D value;
+        private final Point2D value;
         private Node left;
         private Node right;
 
