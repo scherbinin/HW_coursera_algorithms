@@ -1,7 +1,6 @@
 package week5;
 
 import org.junit.Test;
-import week3.collinearPoints.Point;
 import week5.intersectionsOfGeometricPrimitives.PointSET;
 import week5.intersectionsOfGeometricPrimitives.primitives.Point2D;
 import week5.intersectionsOfGeometricPrimitives.primitives.RectHV;
