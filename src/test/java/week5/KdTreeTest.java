@@ -49,7 +49,7 @@ public class KdTreeTest {
         kdTree.insert(point10);
     }
 
-    @Test
+    @Test()
     public void executeContains_when10PointInserting_expectedCorrectBehaviour() {
         Point2D extraPoint = new Point2D(10,10);
 
