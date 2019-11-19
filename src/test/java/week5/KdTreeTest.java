@@ -2,7 +2,6 @@ package week5;
 
 import org.junit.Before;
 import org.junit.Test;
-import week3.collinearPoints.Point;
 import week5.intersectionsOfGeometricPrimitives.KdTree;
 import week5.intersectionsOfGeometricPrimitives.primitives.Point2D;
 import week5.intersectionsOfGeometricPrimitives.primitives.RectHV;

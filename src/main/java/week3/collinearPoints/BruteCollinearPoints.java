@@ -1,71 +1,74 @@
 package week3.collinearPoints;
 
 import java.util.Arrays;
+import java.util.Vector;
 
+/**
+ * Created by scher on 12.08.2019.
+ */
 public class BruteCollinearPoints {
 
-    private LineSegment[] lineSegments = new LineSegment[0];
+   private LineSegment[] lineSegments;
 
-    // finds all line segments containing 4 points
-    public BruteCollinearPoints(Point[] points) {
-        if (isValidateInputData(points)) {
-            Point[] internalCollection = new Point[points.length];
-            System.arraycopy(points, 0, internalCollection, 0, points.length);
-            calculateLineSegments(internalCollection);
-        }
-    }
+   // finds all line segments containing 4 points
+   public BruteCollinearPoints(Point[] points) {
+      if (points.length < 4)
+         return;
 
-    private boolean isValidateInputData(Point[] points) {
-        if (points == null)
-            throw new IllegalArgumentException();
+      calculateLineSegments(points);
+   }
 
-        for (int i = 0; i < points.length; i++) {
-            for (int j = i + 1; j < points.length; j++) {
-                if (points[i] == null || points[j] == null)
-                    throw new IllegalArgumentException();
+   private void calculateLineSegments(Point[] points) {
+      double[] lines = new double[points.length];//Index - start point, value - end point
+      Arrays.sort(points);
+      LineSegment[] lineSegments = new LineSegment[points.length];
+      int index = 0;
 
-                if (points[i].compareTo(points[j]) == 0)
-                    throw new IllegalArgumentException();
-            }
-        }
+      for (int i = 0; i < lines.length; i++)
+         lines[i] = -1;
 
-        return points.length >= 4;
-    }
+      for (int i = 0; i < points.length - 3; i++) {
+         for (int j = i + 1; j < points.length - 2; j++) {
+            for (int k = j + 1; k < points.length - 1; k++) {
+               if (points[i].slopeOrder().compare(points[j], points[k]) == 0) {
+                  for (int l = points.length - 1; l > k; l--) {
+                     double slope = points[i].slopeTo(points[l]);
 
-    private void calculateLineSegments(Point[] points) {
-        Arrays.sort(points);
-        LineSegment[] segments = new LineSegment[points.length];
-        int index = 0;
+                     //if 4 point are lying on one straight
+                     if (points[i].slopeOrder().compare(points[j], points[l]) == 0) {
 
-        for (int i = 0; i < points.length - 3; i++) {
-            for (int j = i + 1; j < points.length - 2; j++) {
-                for (int k = j + 1; k < points.length - 1; k++) {
-                    if (points[i].slopeOrder().compare(points[j], points[k]) == 0) {
-                        for (int n = points.length - 1; n > k; n--) {
-                            double slope = points[i].slopeTo(points[n]);
-
-                            // if 4 point are lying on one straight
-                            if (points[i].slopeOrder().compare(points[j], points[n]) == 0) {
-                                segments[index++] = new LineSegment(points[i], points[n]);
-                            }
+                        //Check if defined line already contained all some of those points.
+                        //Need just to define exactly one line which doesn't contains or intersects with some different line with the same slope
+                        if(Double.compare(lines[l], slope)!=0 &&
+                                Double.compare(lines[j], slope) != 0 &&
+                                Double.compare(lines[j], slope) != 0 &&
+                                Double.compare(lines[i], slope) != 0) {
+                           lines[i] = slope;//save slope for the first point of line, to except all further point on that line
+                           lines[l] = slope;
+                           lines[j] = slope;
+                           lines[k] = slope;
+                           lineSegments[index++] = new LineSegment(points[i], points[l]);
                         }
-                    }
-                }
+                     }
+                  }
+               }
             }
-        }
+         }
+      }
 
-        this.lineSegments = new LineSegment[index];
+      this.lineSegments = new LineSegment[index];
 
-        System.arraycopy(segments, 0, this.lineSegments, 0, index);
-    }
+      for (int i = 0; i < index; i++)
+         this.lineSegments[i] = lineSegments[i];
+   }
 
-    // the number of line segments
-    public int numberOfSegments() {
-        return lineSegments.length;
-    }
+   // the number of line segments
+   public int numberOfSegments() {
+      return lineSegments.length;
+   }
 
-    // the line segments
-    public LineSegment[] segments() {
-        return lineSegments;
-    }
+   // the line segments
+   public LineSegment[] segments() {
+      return lineSegments;
+   }
 }

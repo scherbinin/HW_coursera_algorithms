@@ -3,12 +3,16 @@ package week5.intersectionsOfGeometricPrimitives;
 import week5.intersectionsOfGeometricPrimitives.primitives.Point2D;
 import week5.intersectionsOfGeometricPrimitives.primitives.RectHV;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.TreeSet;
+import java.util.Set;
 
 // Brute-force implementation. Write a mutable data type PointSET.java
 // that represents a set of points in the unit square. Implement the following API by using a red–black BST
 public class PointSET {
-    private Set<Point2D> pointsContainer;
+    private final Set<Point2D> pointsContainer;
 
     // construct an empty set of points
     public PointSET() {
@@ -27,7 +31,7 @@ public class PointSET {
 
     // add the point to the set (if it is not already in the set)
     public void insert(Point2D p) {
-        if(Objects.isNull(p))
+        if (Objects.isNull(p))
             throw new IllegalArgumentException();
 
         pointsContainer.add(p);
@@ -35,7 +39,7 @@ public class PointSET {
 
     // does the set contain point p?
     public boolean contains(Point2D p) {
-        if(Objects.isNull(p))
+        if (Objects.isNull(p))
             throw new IllegalArgumentException();
 
         return pointsContainer.contains(p);
@@ -48,13 +52,13 @@ public class PointSET {
 
     // all points that are inside the rectangle (or on the boundary)
     public Iterable<Point2D> range(RectHV rect) {
-        if(Objects.isNull(rect))
+        if (Objects.isNull(rect))
             throw new IllegalArgumentException();
 
         List<Point2D> inRect = new LinkedList<>();
 
         for (Point2D point2D : pointsContainer) {
-            if(rect.contains(point2D))
+            if (rect.contains(point2D))
                 inRect.add(point2D);
         }
 
@@ -63,16 +67,16 @@ public class PointSET {
 
     // a nearest neighbor in the set to point p; null if the set is empty
     public Point2D nearest(Point2D p) {
-        if(Objects.isNull(p))
+        if (Objects.isNull(p))
             throw new IllegalArgumentException();
 
-        double minDist = Double.MAX_VALUE;
+        double minDist = Double.POSITIVE_INFINITY;
         Point2D nearestPoint = null;
 
         for (Point2D point2D : pointsContainer) {
-            double currDist = p.distanceTo(point2D);
+            double currDist = p.distanceSquaredTo(point2D);
 
-            if(minDist > currDist) {
+            if (minDist > currDist) {
                 minDist = currDist;
                 nearestPoint = point2D;
             }
@@ -81,7 +85,7 @@ public class PointSET {
         return nearestPoint;
     }
 
-    // unit testing of the methods (optional)
     public static void main(String[] args) {
+        throw new UnsupportedOperationException();
     }
 }
